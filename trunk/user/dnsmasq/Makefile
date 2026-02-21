@@ -3,16 +3,17 @@
 SRC_NAME = dnsmasq-2.92
 SRC_URL  = https://thekelleys.org.uk/dnsmasq/$(SRC_NAME).tar.xz
 
-CFLAGS += -DHAVE_BROKEN_RTC -DNO_INOTIFY -DNO_AUTH -DNO_LOOP -DNO_DUMPFILE -DNO_ID
-CFLAGS += $(if $(CONFIG_IPV6),,-DNO_DHCP6)
-CFLAGS += $(if $(CONFIG_USB_SUPPORT),,-DNO_TFTP)
-CFLAGS += $(if $(CONFIG_FIRMWARE_INCLUDE_IPSET),,-DNO_IPSET)
+COPTS = -DHAVE_BROKEN_RTC -DNO_INOTIFY -DNO_AUTH -DNO_LOOP -DNO_DUMPFILE -DNO_ID
+COPTS += $(if $(CONFIG_IPV6),,-DNO_DHCP6)
+COPTS += $(if $(CONFIG_USB_SUPPORT),,-DNO_TFTP)
+COPTS += $(if $(CONFIG_FIRMWARE_INCLUDE_IPSET),,-DNO_IPSET)
+COPTS += $(if $(CONFIG_FIRMWARE_ENABLE_DNSMASQ_REGEX),-DHAVE_REGEX -DHAVE_REGEX_IPSET,)
 
 CFLAGS += -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS += -Wl,--gc-sections
 
 all: download_test extract_test
-	$(MAKE) -C $(SRC_NAME)
+	$(MAKE) -C $(SRC_NAME) COPTS="$(COPTS)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
 
 download_test:
 	( if [ ! -f $(SRC_NAME).tar.xz ]; then \

@@ -1,6 +1,6 @@
 --- dnsmasq-2.92.orig/Makefile
 +++ dnsmasq-2.92/Makefile
-@@ -18,14 +18,12 @@
+@@ -18,15 +18,12 @@
  
  # Variables you may well want to override.
  
@@ -13,9 +13,10 @@
  DESTDIR       = 
 -CFLAGS        = -Wall -W -O2
 -LDFLAGS       = 
- COPTS         = 
+-COPTS         = 
  RPM_OPT_FLAGS = 
  LIBS          = 
+ LUA           = lua
 --- dnsmasq-2.92.orig/src/config.h
 +++ dnsmasq-2.92/src/config.h
 @@ -50,7 +50,7 @@

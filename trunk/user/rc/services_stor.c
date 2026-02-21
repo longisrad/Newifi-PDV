@@ -552,9 +552,6 @@ void run_samba(void)
 		doSystem("killall %s %s", "-SIGHUP", "wsdd2");
 	else
 		eval("/sbin/wsdd2", "-d", "-w");
-
-	if (pids("wsdd2"))
-		logmessage("WSDD2", "daemon is started");
 #endif
 
 	if (pids("nmbd") && pids("smbd"))

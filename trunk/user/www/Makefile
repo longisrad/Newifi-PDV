@@ -12,7 +12,7 @@ PROJECT_HOME_URL_ALXDM   = "https:\/\/gitlab.com\/dm38\/padavan-ng"
 PROJECT_HOME_URL_NIL     = "https:\/\/github.com\/nilabsent\/padavan-ng"
 PROJECT_HOME_URL         = $(PROJECT_HOME_URL_NIL)
 
-LABEL_COPYRIGHT_TEXT = '© 2011-2025 <a href=$(PROJECT_HOME_URL_PADAVAN) target="blank">Padavan<\/a> \& N56U project community\
+LABEL_COPYRIGHT_TEXT = '© 2011-2026 <a href=$(PROJECT_HOME_URL_PADAVAN) target="blank">Padavan<\/a> \& N56U project community\
                         \& <a href=$(PROJECT_HOME_URL_LINARO) target="blank">Linaro<\/a> \
                         \& <a href=$(PROJECT_HOME_URL_ALXDM) target="blank">Alxdm<\/a> \
                         \& <a href=$(PROJECT_HOME_URL_NIL) target="blank">nil<\/a>'

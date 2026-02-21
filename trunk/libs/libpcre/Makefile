@@ -1,34 +1,48 @@
-SRC_NAME=pcre-8.43
+# https://www.pcre.org
 
-all: config_test
+SRC_NAME = pcre-8.45
+SRC_URL = https://downloads.sourceforge.net/project/pcre/pcre/8.45/$(SRC_NAME).tar.bz2
+
+all: download_test extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
 
+download_test:
+	( if [ ! -f $(SRC_NAME).tar.bz2 ]; then \
+		wget -t5 -T20 --no-check-certificate -O $(SRC_NAME).tar.bz2 $(SRC_URL) \
+			|| rm -f $(SRC_NAME).tar.bz2; \
+	fi )
+
+extract_test:
+	( if [ ! -d $(SRC_NAME) ]; then \
+		tar xjf $(SRC_NAME).tar.bz2; \
+	fi )
+
 config_test:
-	( if [ -f ./config_done ]; then \
+	( if [ -f ./config_done ] ; then \
 		echo "the same configuration"; \
 	else \
 		make configure && touch config_done; \
-	fi ) 
+	fi )
 
 configure:
-	( cd $(SRC_NAME) ; \
-	autoreconf ; \
+	( cd $(SRC_NAME); \
+	autoreconf; \
 	./configure \
 		--prefix= \
 		--enable-static \
 		--disable-shared \
 		--disable-cpp \
 		--host=$(HOST_TARGET) \
-		--build=$(HOST_BUILD) ; \
+		--build=$(HOST_BUILD); \
 	)
 
 clean:
-	if [ -f $(SRC_NAME)/Makefile ] ; then \
-		$(MAKE) -C $(SRC_NAME) distclean ; \
-	fi ; \
+	if [ -f $(SRC_NAME)/Makefile ]; then \
+		$(MAKE) -C $(SRC_NAME) distclean; \
+	fi; \
 	rm -f config_done
 
 install:
 	$(MAKE) -C $(SRC_NAME) install DESTDIR=$(STAGEDIR)
-
+	
 romfs:
