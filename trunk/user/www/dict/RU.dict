@@ -1834,6 +1834,7 @@ Service_Stubby_Resolvers_Header=Список резолверов
 Service_Stubby_Alert_Empty=Список резолверов пуст, добавьте хотя бы один.
 Service_DoH_Info=DNS-over-HTTPS (DoH) — это технология, при которой DNS-запросы передаются через защищённый протокол HTTPS.
 Service_DoH_BootstrapDNS=DNS начальной инициализации
+Service_DoH_Quic=Использование HTTP/3 (QUIC)
 Service_DNSCrypt_Info=DNSCrypt — это протокол, который шифрует DNS-запросы между пользователем и DNS-сервером, обеспечивая защиту от подмены, прослушивания и атак «man-in-the-middle».
 Service_DNSCrypt_Mode_Desc=<b>Автономный</b>: сервис работает сам по себе.<br><b>DNS роутера</b>: интегрируется со встроенным DNS-сервером роутера для преобразования имён доменов. Провайдерский DNS при этом игнорируется.
 Service_DNSCrypt_Mode_Menu0=Автономный

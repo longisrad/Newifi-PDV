@@ -1834,6 +1834,7 @@ Service_Stubby_Resolvers_Header=List of resolvers
 Service_Stubby_Alert_Empty=The list of resolvers is empty, add at least one.
 Service_DoH_Info=DNS-over-HTTPS (DoH) is a protocol that sends DNS queries over encrypted HTTPS connections.
 Service_DoH_BootstrapDNS=Bootstrap DNS
+Service_DoH_Quic=Using HTTP/3 (QUIC)
 Service_DNSCrypt_Info=DNSCrypt is a protocol that encrypts DNS queries between a user and a DNS resolver, protecting them from spoofing, eavesdropping, and man-in-the-middle attacks.
 Service_DNSCrypt_Mode_Desc=<b>Standalone</b>: the service works by itself.<br><b>Router's DNS</b>: integrates with the router's built-in DNS server to resolve domain names. The provider DNS is ignored.
 Service_DNSCrypt_Mode_Menu0=Standalone
