@@ -8,7 +8,7 @@ start_adg() {
     logger -t "AdGuardHome" "Đang tắt tính năng DNS của Dnsmasq (Giữ lại DHCP)..."
     sed -Ei '/port=/d' /etc/storage/dnsmasq/dnsmasq.conf
     echo "port=0" >> /etc/storage/dnsmasq/dnsmasq.conf
-    rc dnsmasq restart
+    restart_dhcpd # Sử dụng applet hệ thống chuẩn của Padavan để restart sạch sẽ
     sleep 1
 
     logger -t "AdGuardHome" "Đang khởi động AdGuardHome..."
@@ -24,7 +24,7 @@ start_adg() {
         else
             logger -t "AdGuardHome" "LỖI: Không tải được AdGuardHome. Khôi phục lại DNS Dnsmasq..."
             sed -Ei '/port=0/d' /etc/storage/dnsmasq/dnsmasq.conf
-            rc dnsmasq restart
+            restart_dhcpd
             exit 1
         fi
     fi
@@ -42,6 +42,7 @@ start_adg() {
         fi
     ) &
 }
+
 stop_adg() {
     logger -t "AdGuardHome" "Đang dừng AdGuardHome..."
     killall -9 AdGuardHome_bin 2>/dev/null
@@ -49,9 +50,8 @@ stop_adg() {
     sleep 1
     
     logger -t "AdGuardHome" "Khôi phục lại tính năng DNS mặc định cho Dnsmasq..."
-    # Xóa port=0 để Dnsmasq nhận diện lại cổng 53 làm DNS
     sed -Ei '/port=0/d' /etc/storage/dnsmasq/dnsmasq.conf
-    rc dnsmasq restart
+    restart_dhcpd
 }
 
 case "$1" in
