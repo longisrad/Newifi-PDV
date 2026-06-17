@@ -769,3 +769,18 @@ stop_misc(void)
 
 	kill_services(svcs, 3, 1);
 }
+#if defined(APP_ADGUARDHOME)
+void
+restart_adguardhome(void)
+{
+	eval("/usr/bin/adguardhome.sh", "restart");
+}
+#endif
+
+#if defined(APP_SQM)
+void
+restart_sqm(void)
+{
+	eval("/usr/bin/sqm.sh", "restart");
+}
+#endif
