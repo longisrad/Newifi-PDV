@@ -570,6 +570,12 @@ void stop_dnscrypt(void);
 void start_dnscrypt(void);
 void restart_dnscrypt(void);
 #endif
+#if defined(APP_ADGUARDHOME)
+void restart_adguardhome(void);
+#endif
+#if defined(APP_SQM)
+void restart_sqm(void);
+#endif
 
 /* services_ex.c */
 int fill_dnsmasq_servers(void);
