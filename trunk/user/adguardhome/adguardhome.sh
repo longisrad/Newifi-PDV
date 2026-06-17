@@ -8,13 +8,14 @@ start_adg() {
     logger -t "AdGuardHome" "Đang tắt tính năng DNS của Dnsmasq (Giữ lại DHCP)..."
     sed -Ei '/port=/d' /etc/storage/dnsmasq/dnsmasq.conf
     echo "port=0" >> /etc/storage/dnsmasq/dnsmasq.conf
-    restart_dhcpd # Sử dụng applet hệ thống chuẩn của Padavan để restart sạch sẽ
+    restart_dhcpd
     sleep 1
 
     logger -t "AdGuardHome" "Đang khởi động AdGuardHome..."
     mkdir -p /tmp/AdGuardHome
     
-    if [ ! -f "/tmp/AdGuardHome/AdGuardHome" ] ; then
+    # SỬA LỖI LOGIC: Kiểm tra file _bin cuối cùng để tránh bị tải lặp vô hạn
+    if [ ! -f "/tmp/AdGuardHome/AdGuardHome_bin" ] ; then
         logger -t "AdGuardHome" "Đang tải lõi AdGuardHome mipsle từ GitHub..."
         wget --no-check-certificate -O /tmp/AdGuardHome/AdGuardHome_linux_mipsle.tar.gz https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.52/AdGuardHome_linux_mipsle.tar.gz
         if [ $? -eq 0 ]; then
@@ -33,13 +34,17 @@ start_adg() {
     /tmp/AdGuardHome/AdGuardHome_bin -c /etc/storage/adguardhome.yaml -w /tmp/AdGuardHome >/dev/null 2>&1 &
     logger -t "AdGuardHome" "Khởi động hoàn tất trên cổng quản trị $adg_port."
 
-    # TỰ ĐỘNG LƯU: Đợi bạn thiết lập xong lần đầu rồi tự động lưu file yaml vào bộ nhớ Flash
+    # SỬA LỖI LOGIC: Vòng lặp lưu thông minh, chờ tối đa 5 phút cho đến khi bạn setup xong lần đầu
     (
-        sleep 45
-        if [ -f "/etc/storage/adguardhome.yaml" ]; then
-            mtd_storage.sh save >/dev/null 2>&1
-            logger -t "AdGuardHome" "Đã tự động khóa và lưu cấu hình AdGuardHome vào Flash thành công!"
-        fi
+        for i in $(seq 1 60); do
+            if [ -f "/etc/storage/adguardhome.yaml" ] && [ -s "/etc/storage/adguardhome.yaml" ]; then
+                sleep 5 # Đợi ghi tệp xong hoàn toàn
+                mtd_storage.sh save >/dev/null 2>&1
+                logger -t "AdGuardHome" "Đã tự động lưu cấu hình vào Flash thành công!"
+                break
+            fi
+            sleep 5
+        done
     ) &
 }
 
