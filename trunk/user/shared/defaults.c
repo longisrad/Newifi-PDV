@@ -867,7 +867,7 @@ struct nvram_pair router_defaults[] = {
 #endif
 #if defined (APP_SQM)
 	{ "sqm_enable", "0" },
-	{ "sqm_wan_if", "" },
+	{ "sqm_wan_if", "eth3" }, /* Đặt mặc định là eth3 thay vì "" */
 	{ "sqm_dl_speed", "0" },
 	{ "sqm_ul_speed", "0" },
 	{ "sqm_qdisc", "fq_codel" },
