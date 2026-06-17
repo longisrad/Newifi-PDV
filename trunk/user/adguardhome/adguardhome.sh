@@ -5,9 +5,11 @@ adg_port=$(nvram get adg_port)
 [ -z "$adg_port" ] && adg_port="3000"
 
 start_adg() {
-    logger -t "AdGuardHome" "Đang nhường cổng 53 của Dnsmasq..."
-    nvram set dhcp_dns_port=53535 # Đẩy Dnsmasq sang cổng khác
-    rc dnsmasq restart            # Khởi động lại Dnsmasq áp dụng cổng mới
+    logger -t "AdGuardHome" "Đang tắt tính năng DNS của Dnsmasq (Giữ lại DHCP)..."
+    # Ghi đè port=0 vào file cấu hình dnsmasq hệ thống
+    sed -Ei '/port=/d' /etc/storage/dnsmasq/dnsmasq.conf
+    echo "port=0" >> /etc/storage/dnsmasq/dnsmasq.conf
+    rc dnsmasq restart # Khởi động lại Dnsmasq áp dụng tắt DNS
     sleep 1
 
     logger -t "AdGuardHome" "Đang khởi động AdGuardHome..."
@@ -21,8 +23,8 @@ start_adg() {
             mv /tmp/AdGuardHome/AdGuardHome /tmp/AdGuardHome/AdGuardHome_bin
             rm -rf /tmp/AdGuardHome/AdGuardHome_linux_mipsle.tar.gz
         else
-            logger -t "AdGuardHome" "LỖI: Không thể tải AdGuardHome. Khôi phục Dnsmasq..."
-            nvram set dhcp_dns_port=53
+            logger -t "AdGuardHome" "LỖI: Không tải được AdGuardHome. Khôi phục lại DNS Dnsmasq..."
+            sed -Ei '/port=0/d' /etc/storage/dnsmasq/dnsmasq.conf
             rc dnsmasq restart
             exit 1
         fi
@@ -31,7 +33,7 @@ start_adg() {
     chmod +x /tmp/AdGuardHome/AdGuardHome_bin
     # Khởi chạy lõi AdGuard Home ở cổng 53
     /tmp/AdGuardHome/AdGuardHome_bin -c /etc/storage/adguardhome.yaml -w /tmp/AdGuardHome >/dev/null 2>&1 &
-    logger -t "AdGuardHome" "Khởi động thành công trên cổng quản trị $adg_port."
+    logger -t "AdGuardHome" "Khởi động hoàn tất trên cổng quản trị $adg_port."
 }
 
 stop_adg() {
@@ -40,8 +42,9 @@ stop_adg() {
     rm -rf /tmp/AdGuardHome
     sleep 1
     
-    logger -t "AdGuardHome" "Khôi phục cổng 53 cho Dnsmasq..."
-    nvram set dhcp_dns_port=53
+    logger -t "AdGuardHome" "Khôi phục lại tính năng DNS mặc định cho Dnsmasq..."
+    # Xóa port=0 để Dnsmasq nhận diện lại cổng 53 làm DNS
+    sed -Ei '/port=0/d' /etc/storage/dnsmasq/dnsmasq.conf
     rc dnsmasq restart
 }
 
