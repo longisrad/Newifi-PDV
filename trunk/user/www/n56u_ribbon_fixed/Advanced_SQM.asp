@@ -59,9 +59,28 @@ function applyRule(){
                                 </td>
                             </tr>
                             <tr>
-                                <td>Cổng mạng WAN áp dụng:</td>
+                                <td>Cổng mạng áp dụng (Interface):</td>
                                 <td>
-                                    <input type="text" name="sqm_wan_if" class="input" value="<% nvram_get_x("", "sqm_wan_if"); %>" size="15" placeholder="Mặc định: eth3">
+                                    <select name="sqm_wan_if" class="input" style="width: 250px;">
+                                        <!-- Mạng dây WAN truyền thống -->
+                                        <option value="eth3" <% nvram_match_x("", "sqm_wan_if", "eth3", "selected"); %>>Mạng dây WAN truyền thống (eth3)</option>
+                                        
+                                        <!-- Mạng quay số PPPoE -->
+                                        <option value="ppp0" <% nvram_match_x("", "sqm_wan_if", "ppp0", "selected"); %>>Mạng quay số PPPoE (ppp0)</option>
+                                        
+                                        <!-- Mạng không dây Kích sóng (Wifi Relay 2.4GHz) -->
+                                        <option value="apcli0" <% nvram_match_x("", "sqm_wan_if", "apcli0", "selected"); %>>Kích sóng Wifi 2.4GHz (apcli0)</option>
+                                        
+                                        <!-- Mạng không dây Kích sóng (Wifi Relay 5GHz) -->
+                                        <!-- apclib0 dùng cho driver mở, apclii0/apclix0 dùng cho driver mtk gốc -->
+                                        <option value="apclii0" <% nvram_match_x("", "sqm_wan_if", "apclii0", "selected"); %>>Kích sóng Wifi 5GHz (apclii0 / Driver MTK)</option>
+                                        <option value="apclix0" <% nvram_match_x("", "sqm_wan_if", "apclix0", "selected"); %>>Kích sóng Wifi 5GHz (apclix0 / Driver MTK)</option>
+                                        <option value="apclib0" <% nvram_match_x("", "sqm_wan_if", "apclib0", "selected"); %>>Kích sóng Wifi 5GHz (apclib0 / Driver Open)</option>
+                                        
+                                        <!-- Mạng di động cắm qua cổng USB 3G/4G -->
+                                        <option value="usb0" <% nvram_match_x("", "sqm_wan_if", "usb0", "selected"); %>>Modem USB 4G LTE - RNDIS (usb0)</option>
+                                        <option value="ncm0" <% nvram_match_x("", "sqm_wan_if", "ncm0", "selected"); %>>Modem USB 4G LTE - NCM (ncm0)</option>
+                                    </select>
                                 </td>
                             </tr>
                             <tr>
