@@ -19,6 +19,21 @@
 <script type="text/javascript" src="/help_wl.js"></script>
 <script type="text/javascript" src="/popup.js"></script>
 <script>
+// Ghi đè hàm decodeSSID để sửa lỗi %20 và giải mã tiếng Việt có dấu
+var original_decodeSSID = decodeSSID;
+decodeSSID = function(SSID) {
+    if (!SSID) return "";
+    var decoded = SSID;
+    try {
+        decoded = decodeURIComponent(SSID);
+    } catch (e) {
+        decoded = SSID.replace(/%20/g, " ");
+    }
+    if (typeof original_decodeSSID === "function") {
+        return original_decodeSSID(decoded);
+    }
+    return decoded;
+};
 var $j = jQuery.noConflict();
 
 var wds_aplist = [["", "", ""]];
