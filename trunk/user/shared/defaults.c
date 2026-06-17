@@ -861,6 +861,17 @@ struct nvram_pair router_defaults[] = {
 	{ "vpnc_awg_s3", "0" },
 	{ "vpnc_awg_s4", "0" },
 #endif
+#if defined (APP_ADGUARDHOME)
+	{ "adg_enable", "0" },
+	{ "adg_port", "3000" },
+#endif
+#if defined (APP_SQM)
+	{ "sqm_enable", "0" },
+	{ "sqm_wan_if", "" },
+	{ "sqm_dl_speed", "0" },
+	{ "sqm_ul_speed", "0" },
+	{ "sqm_qdisc", "fq_codel" },
+#endif
 	{ 0, 0 }
 };
 
