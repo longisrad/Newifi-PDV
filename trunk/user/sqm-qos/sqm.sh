@@ -10,19 +10,22 @@ sqm_qdisc=$(nvram get sqm_qdisc)
 [ -z "$sqm_qdisc" ] && sqm_qdisc="fq_codel"
 
 stop_sqm() {
-    logger -t "SQM" "Đang dừng SQM và khôi phục Hardware NAT..."
+    logger -t "SQM" "Đang dừng SQM..."
     tc qdisc del dev $sqm_wan root 2>/dev/null
     tc qdisc del dev $sqm_wan ingress 2>/dev/null
     
-    # Kích hoạt lại Hardware NAT để khôi phục hiệu năng tối đa
-    rc hw_nat start
+    # Kiểm tra cấu hình gốc của người dùng. Nếu họ bật HWNAT thì mới khôi phục lại
+    hwnat_mode=$(nvram get hw_nat_mode)
+    if [ "$hwnat_mode" != "0" ] && [ -n "$hwnat_mode" ]; then
+        logger -t "SQM" "Đang khôi phục lại Hardware NAT hệ thống..."
+        rc hw_nat start
+    fi
 }
 
 start_sqm() {
     [ "$sqm_enable" != "1" ] && return
     
     logger -t "SQM" "Tạm dừng Hardware NAT để CPU xử lý hàng đợi SQM..."
-    # Tắt Hardware NAT (Bắt buộc để lệnh tc hoạt động định tuyến qua CPU)
     rc hw_nat stop
     sleep 1
 
