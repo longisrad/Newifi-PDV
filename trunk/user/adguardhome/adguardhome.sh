@@ -6,10 +6,9 @@ adg_port=$(nvram get adg_port)
 
 start_adg() {
     logger -t "AdGuardHome" "Đang tắt tính năng DNS của Dnsmasq (Giữ lại DHCP)..."
-    # Ghi đè port=0 vào file cấu hình dnsmasq hệ thống
     sed -Ei '/port=/d' /etc/storage/dnsmasq/dnsmasq.conf
     echo "port=0" >> /etc/storage/dnsmasq/dnsmasq.conf
-    rc dnsmasq restart # Khởi động lại Dnsmasq áp dụng tắt DNS
+    rc dnsmasq restart
     sleep 1
 
     logger -t "AdGuardHome" "Đang khởi động AdGuardHome..."
@@ -31,11 +30,18 @@ start_adg() {
     fi
     
     chmod +x /tmp/AdGuardHome/AdGuardHome_bin
-    # Khởi chạy lõi AdGuard Home ở cổng 53
     /tmp/AdGuardHome/AdGuardHome_bin -c /etc/storage/adguardhome.yaml -w /tmp/AdGuardHome >/dev/null 2>&1 &
     logger -t "AdGuardHome" "Khởi động hoàn tất trên cổng quản trị $adg_port."
-}
 
+    # TỰ ĐỘNG LƯU: Đợi bạn thiết lập xong lần đầu rồi tự động lưu file yaml vào bộ nhớ Flash
+    (
+        sleep 45
+        if [ -f "/etc/storage/adguardhome.yaml" ]; then
+            mtd_storage.sh save >/dev/null 2>&1
+            logger -t "AdGuardHome" "Đã tự động khóa và lưu cấu hình AdGuardHome vào Flash thành công!"
+        fi
+    ) &
+}
 stop_adg() {
     logger -t "AdGuardHome" "Đang dừng AdGuardHome..."
     killall -9 AdGuardHome_bin 2>/dev/null
