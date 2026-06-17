@@ -12,13 +12,26 @@
 <script type="text/javascript" src="/general.js"></script>
 <script type="text/javascript" src="/popup.js"></script>
 <script>
+var adg_enable_status = "<% nvram_get_x("", "adg_enable"); %>";
+
 function initial(){
     show_menu();
+    // Ẩn/hiện nút mở trang quản trị dựa trên trạng thái hoạt động
+    if (adg_enable_status == "1") {
+        document.getElementById("btn_open_adg").style.display = "";
+    } else {
+        document.getElementById("btn_open_adg").style.display = "none";
+    }
 }
 function applyRule(){
     showLoading(5);
     document.form.action_mode.value = " Apply ";
     document.form.submit();
+}
+function open_adg_panel(){
+    var ip = "<% nvram_get_x("", "lan_ipaddr"); %>";
+    var port = "<% nvram_get_x("", "adg_port"); %>";
+    window.open("http://" + ip + ":" + port, "_blank");
 }
 </script>
 </head>
@@ -62,6 +75,12 @@ function applyRule(){
                                 <td>Cổng truy cập WebUI:</td>
                                 <td>
                                     <input type="text" name="adg_port" class="input" value="<% nvram_get_x("", "adg_port"); %>" size="10" maxlength="5">
+                                </td>
+                            </tr>
+                            <tr id="btn_open_adg" style="display:none;">
+                                <td>Trang quản trị AdGuard Home:</td>
+                                <td>
+                                    <input type="button" class="button" value="Mở bảng điều khiển AdGuard" onclick="open_adg_panel();" style="width: 210px;">
                                 </td>
                             </tr>
                             <tr>
